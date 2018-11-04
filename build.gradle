@@ -32,4 +32,9 @@ dependencies {
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly('mysql:mysql-connector-java')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	// swagger
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+	compile group: 'com.mangofactory', name: 'swagger-springmvc', version: '1.0.2'
 }
+
