@@ -6,12 +6,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -31,9 +25,6 @@ import com.spomatch.users.players.SoccerPlayer;
  */
 public class TestUserSpec {
 
-	private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	private Validator validator = factory.getValidator();
-	
 	@Test
 	public void 회원의_종류로는_게스트_일반사용자_운영자_가있다() {
 		
@@ -43,26 +34,6 @@ public class TestUserSpec {
 		assertNotNull(RoleType.ADMIN);
 	}
 
-	@Test
-	public void 회원가입시의_정보는_검증대상이다_성공() {
-		
-		// given
-		User user = new User();
-		String idForLogin = "아이디는5자이상30자미만이어야합니다.";
-		String pw = "비밀번호는8자이상100자미만이어야합니다.";
-		String name = "이름은2자이상30자미만이어야합니다.";
-		
-		user.setIdForLogin(idForLogin);
-		user.setPw(pw);
-		user.setName(name);
-
-		// when
-		Set<ConstraintViolation<User>> violations = validator.validate(user);
-		
-		// then
-		assertThat(violations.size(), is(0));
-	}
-	
 	@Test
 	public void 회원가입시에_제공_할_수있는_정보에는_ID_PW_이름_선호지역_나이_가있다() {
 		
@@ -82,48 +53,6 @@ public class TestUserSpec {
 		user.setName(name);
 		user.setPreferredLocations(preferredLocations);
 		user.setAge(age);
-	}
-	
-	@Test
-	public void 회원가입시의_정보는_검증대상이다_아이디_때문에_실패() {
-		
-		// given
-		User user = new User();
-		
-		// when & then
-		user.setIdForLogin(RandomStringUtils.randomAlphanumeric(4));
-		assertThat("아이디는 5자 이상 30자 이하이어야 합니다.", validator.validateProperty(user, "idForLogin").size(), is(1));
-		
-		user.setIdForLogin(RandomStringUtils.randomAlphanumeric(31));
-		assertThat("아이디는 5자 이상 30자 이하이어야 합니다.", validator.validateProperty(user, "idForLogin").size(), is(1));
-	}
-
-	@Test
-	public void 회원가입시의_정보는_검증대상이다_비밀번호_때문에_실패() {
-		
-		// given
-		User user = new User();
-		
-		// when & then
-		user.setPw(RandomStringUtils.randomAlphanumeric(7));
-		assertThat("비밀번호는 8자 이상이어야 합니다.", validator.validateProperty(user, "pw").size(), is(1));
-		
-		user.setPw(RandomStringUtils.randomAlphanumeric(101));
-		assertThat("비밀번호는 100자 이하이어야 합니다.", validator.validateProperty(user, "pw").size(), is(1));
-	}
-	
-	@Test
-	public void 회원가입시의_정보는_검증대상이다_이름_때문에_실패() {
-		
-		// given 
-		User user = new User();
-		
-		// when & then
-		user.setName(RandomStringUtils.randomAlphanumeric(1));
-		assertThat("이름은 2자 이상이어야 합니다.", validator.validateProperty(user, "name").size(), is(1));
-		
-		user.setName(RandomStringUtils.randomAlphanumeric(31));
-		assertThat("이름은 30자 미만이어야 합니다.", validator.validateProperty(user, "name").size(), is(1));
 	}
 	
 	@Test

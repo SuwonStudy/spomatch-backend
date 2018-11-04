@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -22,6 +23,7 @@ import com.spomatch.users.players.Player;
  */
 public class User {
 
+	@NotNull
 	private UserId id;
 	
 	@Length(min = 5, max = 30)
@@ -38,7 +40,7 @@ public class User {
 	
 	private int age;
 	
-	private List<Location> preferredLocations;
+	private List<Location> preferredLocations = new ArrayList<>();
 	
 	/**
 	 * 회원은 여러 개의 선수 프로필을 가집니다.
@@ -167,5 +169,13 @@ public class User {
 			throw new PlayerIsALeaderOfAnyGroupException();
 		
 		players.remove(toRemove);
-	}	
+	}
+
+	public void updateUserInfo(User toUpdate) {
+		
+		this.pw = toUpdate.pw;
+		this.preferredLocations = toUpdate.preferredLocations;
+		this.age = toUpdate.age;
+	}
+
 }
