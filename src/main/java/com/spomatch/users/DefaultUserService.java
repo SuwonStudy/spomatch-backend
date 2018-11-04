@@ -41,11 +41,24 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public User update(User toUpdate) {
+	public User updateUserInfo(User toUpdate) {
 		
 		for (User user : registeredUsers) {
 			if (user.equals(toUpdate)) {
 				user.updateUserInfo(toUpdate);
+				return user;
+			}
+		}
+		
+		throw new UserNotExistException();
+	}
+
+	@Override
+	public User updatePlayers(User toUpdate) {
+		
+		for (User user : registeredUsers) {
+			if (user.equals(toUpdate)) {
+				user.setPlayers(toUpdate.getPlayers());
 				return user;
 			}
 		}
@@ -68,8 +81,14 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public void cancel(User toCancel) {
-		registeredUsers.removeIf(user -> user.equals(toCancel));
+	public void cancel(UserId idToCancel) {
+		
+		User toCancel = getById(idToCancel);
+		
+		if (toCancel.getPlayerSize() > 0)
+			throw new PlayerExistWhenCancelMembershipException();
+		
+		registeredUsers.removeIf(user -> user.getId().equals(idToCancel));
 	}
 
 	@Override

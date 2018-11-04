@@ -4,9 +4,11 @@ public interface UserService {
 
 	User register(User user);
 
-	User update(User registered);
+	User updateUserInfo(User toUpdate);
 
-	void cancel(User user);
+	User updatePlayers(User toUpdate);
+
+	void cancel(UserId idToCancel);
 
 	User getById(UserId id);
 

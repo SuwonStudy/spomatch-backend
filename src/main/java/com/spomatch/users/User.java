@@ -172,7 +172,6 @@ public class User {
 	}
 
 	public void updateUserInfo(User toUpdate) {
-		
 		this.pw = toUpdate.pw;
 		this.preferredLocations = toUpdate.preferredLocations;
 		this.age = toUpdate.age;
