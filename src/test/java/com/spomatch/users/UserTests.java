@@ -1,12 +1,6 @@
 package com.spomatch.users;
 
-import java.util.Random;
-
 import org.apache.commons.lang3.RandomStringUtils;
-
-import com.spomatch.users.players.Player;
-import com.spomatch.users.players.PlayerId;
-import com.spomatch.users.players.SoccerPlayer;
 
 public class UserTests {
 
@@ -15,24 +9,31 @@ public class UserTests {
 		String pw = RandomStringUtils.randomAlphanumeric(10);
 		String name = RandomStringUtils.randomAlphanumeric(5);
 
-		User toRegister = new User();
-		toRegister.setIdForLogin(idForLogin);
-		toRegister.setPw(pw);
-		toRegister.setName(name);
+		UserAuthentication userAuth = new UserAuthentication(idForLogin, pw);
+		UserInfo userInfo = new UserInfo(name, 22, null);
+		User toRegister = new User(null, userInfo, userAuth, null);
 
 		return toRegister;
 	}
 
-	public static void createLeaderPlayer(User user) {
-		
-		Random r = new Random();
-		long randomId = r.nextLong();
-		
-		Player soccerPlayer = new SoccerPlayer();
-		soccerPlayer.setId(new PlayerId(randomId));
+	public static User createDummy(UserAuthentication userAuth) {
+		String name = RandomStringUtils.randomAlphanumeric(5);
 
-		soccerPlayer.createParty(RandomStringUtils.randomAlphabetic(5)); // Team이어도 상관 없음
+		UserInfo userInfo = new UserInfo(name, 22, null);
+		
+		User toRegister = new User(null, userInfo, userAuth, null);
 
-		user.addPlayer(soccerPlayer);
+		return toRegister;
+	}
+
+	public static User createDummy(UserInfo userInfo) {
+		String idForLogin = RandomStringUtils.randomAlphanumeric(10);
+		String pw = RandomStringUtils.randomAlphanumeric(10);
+		
+		UserAuthentication userAuth = new UserAuthentication(idForLogin, pw);
+		
+		User toRegister = new User(null, userInfo, userAuth, null);
+
+		return toRegister;
 	}
 }

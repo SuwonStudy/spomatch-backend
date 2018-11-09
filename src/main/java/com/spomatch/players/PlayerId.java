@@ -1,23 +1,13 @@
-package com.spomatch.users;
+package com.spomatch.players;
 
 import java.util.Objects;
 
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
+public class PlayerId {
 
-/**
- * Immutable한 Id 객체이다.
- * 
- * @author Seongbin Kim
- */
-@Embeddable
-public class UserId {
-
-	@NotNull
 	private Long id;
 
-	public UserId(Long id) {
-		this.id = id;
+	public PlayerId(Long value) {
+		this.id = value;
 	}
 	
 	public Long get() {
@@ -29,7 +19,7 @@ public class UserId {
 		if (obj == null)
 			return false;
 		
-		UserId anotherId = (UserId) obj;
+		PlayerId anotherId = (PlayerId) obj;
 		
 		return this.id == anotherId.id;
 	}

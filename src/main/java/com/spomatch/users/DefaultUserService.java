@@ -1,27 +1,33 @@
 package com.spomatch.users;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
+import org.springframework.stereotype.Service;
+
+import com.spomatch.players.support.PlayerExistWhenCancelMembershipException;
+import com.spomatch.users.support.BadInputException;
+import com.spomatch.users.support.UserNotExistException;
+
+@Transactional
+@Service
 public class DefaultUserService implements UserService {
 
-	private long nextId = 1;
-	private List<User> registeredUsers = new ArrayList<>();
-
-	private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	private Validator validator = factory.getValidator();
+	private Validator validator;
 	
+	private UserRepository repo;
+	
+	public DefaultUserService(Validator validator, UserRepository repo) {
+		this.validator = validator;
+		this.repo = repo;
+	}
+
 	@Override
 	public User register(User toRegister) {
 		
-		toRegister.setId(getNextId());
-
 		Set<ConstraintViolation<User>> violations = validator.validate(toRegister);
 		
 		if (violations.size() > 0)
@@ -29,55 +35,23 @@ public class DefaultUserService implements UserService {
 		
 		// Test 코드에서 setter 호출 시 해당 서비스에서 저장한 엔터티까지 바뀌는
 		// 문제 때문에 그대로 복제해서 저장 후, 원본엔 Id만 추가하여 반환
-		User registered = cloneUser(toRegister);
-		
-		registeredUsers.add(registered);
-		
-		return toRegister;
-	}
-
-	private UserId getNextId() {
-		return new UserId(nextId++);
+		return repo.save(toRegister);
 	}
 
 	@Override
-	public User updateUserInfo(User toUpdate) {
+	public void updateUserInfo(UserId id, UserInfo toUpdate) {
+
+		User user = getById(id);
 		
-		for (User user : registeredUsers) {
-			if (user.equals(toUpdate)) {
-				user.updateUserInfo(toUpdate);
-				return user;
-			}
-		}
-		
-		throw new UserNotExistException();
+		user.updateUserInfo(toUpdate);
 	}
 
 	@Override
-	public User updatePlayers(User toUpdate) {
-		
-		for (User user : registeredUsers) {
-			if (user.equals(toUpdate)) {
-				user.setPlayers(toUpdate.getPlayers());
-				return user;
-			}
-		}
-		
-		throw new UserNotExistException();
-	}
+	public void changePassword(UserId id, PasswordChangeRequest req) {
 
-	private User cloneUser(User toClone) {
+		User user = getById(id);
 		
-		User user = new User();
-		user.setId(toClone.getId());
-		user.setIdForLogin(toClone.getIdForLogin());
-		user.setPw(toClone.getPw());
-		user.setName(toClone.getName());
-		user.setPreferredLocations(toClone.getPreferredLocations());
-		user.setAge(toClone.getAge());
-		user.setPlayers(toClone.getPlayers());
-		
-		return user;
+		user.changePassword(req);
 	}
 
 	@Override
@@ -88,17 +62,24 @@ public class DefaultUserService implements UserService {
 		if (toCancel.getPlayerSize() > 0)
 			throw new PlayerExistWhenCancelMembershipException();
 		
-		registeredUsers.removeIf(user -> user.getId().equals(idToCancel));
+		repo.delete(toCancel);
 	}
 
 	@Override
 	public User getById(UserId id) {
 		
-		for (User user : registeredUsers) {
-			if (user.getId().equals(id))
-				return user;
-		}
+		User user = repo.getOne(id);
 		
-		throw new UserNotExistException();
+		if (user == null)
+			throw new UserNotExistException();
+		
+		return user;
+	}
+
+	@Override
+	public boolean login(UserAuthentication userAuth) {
+		User user = repo.findByUserAuthentication(userAuth);
+		
+		return user != null;
 	}
 }

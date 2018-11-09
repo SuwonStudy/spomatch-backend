@@ -4,12 +4,14 @@ public interface UserService {
 
 	User register(User user);
 
-	User updateUserInfo(User toUpdate);
-
-	User updatePlayers(User toUpdate);
+	void updateUserInfo(UserId id, UserInfo toUpdate);
+	
+	void changePassword(UserId id, PasswordChangeRequest req);
 
 	void cancel(UserId idToCancel);
 
 	User getById(UserId id);
+
+	boolean login(UserAuthentication userAuthChanged);
 
 }
