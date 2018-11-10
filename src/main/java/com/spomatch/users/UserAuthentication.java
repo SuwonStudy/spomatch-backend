@@ -2,10 +2,12 @@ package com.spomatch.users;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Embeddable;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
+@Embeddable
 public class UserAuthentication {
 
 	@Length(min = 5, max = 30)

@@ -3,10 +3,10 @@ package com.spomatch.users;
 import java.util.List;
 
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.spomatch.common.Location;
 

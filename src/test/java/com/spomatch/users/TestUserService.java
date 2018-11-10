@@ -5,15 +5,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.spomatch.common.SportsType;
 import com.spomatch.players.FutsalPlayer;
 import com.spomatch.players.Player;
-import com.spomatch.players.PlayerRepository;
 import com.spomatch.players.PlayerService;
 import com.spomatch.players.PlayerServiceFactory;
 import com.spomatch.players.SoccerPlayer;
@@ -29,21 +28,21 @@ import com.spomatch.users.support.UserNotExistException;
  * @author Seongbin Kim
  */
 public class TestUserService {
-
-	private UserService userService = UserServiceFactory.getInstance();
-	private UserRepository userRepo = UserServiceFactory.getMockRepoInstance();
 	
-	private PlayerService playerService = PlayerServiceFactory.getInstance();
-	private PlayerRepository playerRepo = PlayerServiceFactory.getMockRepoInstance();
+	private UserService userService;
+	private PlayerService playerService;
 
+	@Before
+	public void setUp() {
+		userService = UserServiceFactory.getInstance().getService();
+		playerService = PlayerServiceFactory.getInstance().getService();
+	}
 	
 	@Test
 	public void 회원은_가입_할_수_있다() {
 		
 		// given
 		User toRegister = UserTests.createDummy();
-		toRegister.assignNewId(new UserId(Long.valueOf(1)));
-		when(userRepo.save(toRegister)).thenReturn(toRegister);
 		
 		// when
 		User registered = userService.register(toRegister);
@@ -87,7 +86,9 @@ public class TestUserService {
 		User user = UserTests.createDummy(userAuth);
 		
 		// when
-		userService.register(user);
+		User registered = userService.register(user);
+		
+		System.out.println();
 	}
 
 	// then

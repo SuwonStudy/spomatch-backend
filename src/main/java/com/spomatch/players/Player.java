@@ -3,6 +3,7 @@ package com.spomatch.players;
 import java.util.Objects;
 
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -10,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 
 import com.spomatch.common.SportsDomainEntity;
+import com.spomatch.users.UserId;
 
 /**
  * 선수의 공통 속성과 행위를 정의합니다.
@@ -24,6 +26,9 @@ public abstract class Player extends SportsDomainEntity {
 	@NotNull
 	@EmbeddedId
 	protected PlayerId id;
+
+	@Embedded
+	protected UserId userId;
 	
 	@Override
 	public boolean equals(Object obj) {

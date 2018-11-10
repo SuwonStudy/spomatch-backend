@@ -3,10 +3,12 @@ package com.spomatch.users;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.validation.Valid;
+import javax.persistence.JoinColumn;
 
 import com.spomatch.players.PlayerId;
 
@@ -21,21 +23,20 @@ import com.spomatch.players.PlayerId;
 @Entity
 public class User implements Cloneable {
 
-	@Valid
 	@EmbeddedId
 	private UserId id;
 
-	@Valid
 	@Embedded
 	private UserInfo userInfo;
 
-	@Valid
 	@Embedded
 	private UserAuthentication userAuthentication;
 	
 	/**
 	 * 회원은 여러 개의 선수 프로필을 가집니다.
 	 */
+    @ElementCollection
+    @CollectionTable(name = "players", joinColumns = @JoinColumn(name = "user_id"))
 	private List<PlayerId> players;
 
 	// Hibernate

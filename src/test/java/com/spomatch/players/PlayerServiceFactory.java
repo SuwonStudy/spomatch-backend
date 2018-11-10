@@ -1,21 +1,28 @@
 package com.spomatch.players;
 
-import static org.mockito.Mockito.mock;
+import com.mmnaseri.utils.spring.data.dsl.factory.RepositoryFactoryBuilder;
 
 import utils.ValidatorProvider;
 
 public class PlayerServiceFactory {
 
-	private static PlayerRepository repo = mock(PlayerRepository.class);
+	private static PlayerServiceFactory instance;
 	
-	private static DefaultPlayerService svc = new DefaultPlayerService(ValidatorProvider.get(), repo);
+	private PlayerRepository repo = RepositoryFactoryBuilder
+			.builder()
+			.generateKeysUsing(PlayerIdGenerator.class)
+			.mock(PlayerRepository.class);
 	
-	public static PlayerService getInstance() {
+	private DefaultPlayerService svc = new DefaultPlayerService(ValidatorProvider.get(), repo);
+	
+	public PlayerService getService() {
 		return svc;
 	}
 	
-	public static PlayerRepository getMockRepoInstance() {
-		return repo;
+	public static PlayerServiceFactory getInstance() {
+		if (instance == null)
+			instance = new PlayerServiceFactory();
+		return instance;
 	}
 
 }

@@ -1,11 +1,23 @@
 package com.spomatch.players;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class PlayerId {
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
+@Embeddable
+public class PlayerId implements Serializable {
+
+	private static final long serialVersionUID = -20158338736243153L;
+	
+	@NotNull
 	private Long id;
 
+	// Hibernate
+	public PlayerId() {
+	}
+	
 	public PlayerId(Long value) {
 		this.id = value;
 	}

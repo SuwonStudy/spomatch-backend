@@ -1,20 +1,28 @@
 package com.spomatch.users;
 
-import static org.mockito.Mockito.mock;
+import com.mmnaseri.utils.spring.data.dsl.factory.RepositoryFactoryBuilder;
 
 import utils.ValidatorProvider;
 
 public class UserServiceFactory {
 
-	private static UserRepository repo = mock(UserRepository.class);
-	
-	private static DefaultUserService svc = new DefaultUserService(ValidatorProvider.get(), repo);
+	private static UserServiceFactory instance;
 
-	public static UserService getInstance() {
+	private UserRepository repo = RepositoryFactoryBuilder
+			.builder()
+			.generateKeysUsing(UserIdGenerator.class)
+			.mock(UserRepository.class);
+	
+	private DefaultUserService svc = new DefaultUserService(ValidatorProvider.get(), repo);
+
+	public UserService getService() {
 		return svc;
 	}
 	
-	public static UserRepository getMockRepoInstance() {
-		return repo;
+	public static UserServiceFactory getInstance() {
+		if (instance == null)
+			instance = new UserServiceFactory();
+		return instance;
 	}
+	
 }
