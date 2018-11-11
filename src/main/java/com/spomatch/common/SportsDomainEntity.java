@@ -3,7 +3,11 @@ package com.spomatch.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -20,6 +24,7 @@ import com.spomatch.common.rating.CreditRatingRank;
  * @author SeongbinKim
  */
 @MappedSuperclass
+@Access(AccessType.FIELD)
 public abstract class SportsDomainEntity {
 
 	/*
@@ -29,13 +34,17 @@ public abstract class SportsDomainEntity {
 	@NotBlank
 	protected String name;
 
+	@Transient
 	protected List<Location> preferredLocations = new ArrayList<>();
 	
 	@NotNull
+	@Column(name = "sports_type")
 	protected SportsType sportsType;
-	
+
+	@Transient
 	protected CreditRating creditRating;
-	
+
+	@Transient
 	protected ActivityRating activityRating;
 	
 	public SportsDomainEntity() {
@@ -45,6 +54,7 @@ public abstract class SportsDomainEntity {
 	/**
 	 * 선호 지역 목록을 반환합니다.
 	 */
+	@Transient
 	public List<Location> getPrefferedLocations() {
 		return preferredLocations;
 	}
@@ -52,7 +62,8 @@ public abstract class SportsDomainEntity {
 	/**
 	 * 운동 종목을 반환합니다.
 	 */
-	public abstract SportsType getSportsType();
+	@Transient
+	protected abstract SportsType getSportsType();
 
 	public int getActivityRatingAsInt() {
 		return activityRating.getAsInt();

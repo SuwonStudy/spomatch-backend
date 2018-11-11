@@ -3,6 +3,7 @@ package com.spomatch.users;
 import java.util.List;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.constraints.Length;
@@ -19,6 +20,7 @@ public class UserInfo {
 	
 	private int age;
 	
+	@Transient
 	private List<Location> preferredLocations;
 
 	// Hibernate

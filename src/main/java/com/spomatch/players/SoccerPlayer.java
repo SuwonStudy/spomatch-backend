@@ -1,7 +1,11 @@
 package com.spomatch.players;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import com.spomatch.common.SportsType;
 
@@ -12,21 +16,20 @@ import com.spomatch.common.SportsType;
  */
 @Entity
 @DiscriminatorValue("SOCCER")
+@Access(AccessType.FIELD)
 public class SoccerPlayer extends Player {
 
+	@Column(name = "preferred_position")
 	private SoccerPosition preferredPosition;
-	
-	public SoccerPlayer() {
-		this.sportsType = SportsType.SOCCER;
-	}
 	
 	@Override
 	protected Position getPreferredPosition() {
 		return preferredPosition;
 	}
 
+	@Transient
 	@Override
-	public SportsType getSportsType() {
+	protected SportsType getSportsType() {
 		return SportsType.SOCCER;
 	}
 

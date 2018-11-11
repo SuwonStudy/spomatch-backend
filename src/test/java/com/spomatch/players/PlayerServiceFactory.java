@@ -2,8 +2,6 @@ package com.spomatch.players;
 
 import com.mmnaseri.utils.spring.data.dsl.factory.RepositoryFactoryBuilder;
 
-import utils.ValidatorProvider;
-
 public class PlayerServiceFactory {
 
 	private static PlayerServiceFactory instance;
@@ -13,7 +11,7 @@ public class PlayerServiceFactory {
 			.generateKeysUsing(PlayerIdGenerator.class)
 			.mock(PlayerRepository.class);
 	
-	private DefaultPlayerService svc = new DefaultPlayerService(ValidatorProvider.get(), repo);
+	private DefaultPlayerService svc = new DefaultPlayerService(repo);
 	
 	public PlayerService getService() {
 		return svc;

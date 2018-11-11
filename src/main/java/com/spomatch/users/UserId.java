@@ -15,10 +15,10 @@ import javax.validation.constraints.NotNull;
 public class UserId implements Serializable {
 
 	private static final long serialVersionUID = -8835054677209789858L;
-	
+
 	@NotNull
 	private Long id;
-	
+
 	// Hibernate
 	protected UserId() {
 	}
@@ -26,23 +26,24 @@ public class UserId implements Serializable {
 	public UserId(Long id) {
 		this.id = id;
 	}
-	
+
 	public Long get() {
 		return id;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
-		
-		UserId anotherId = (UserId) obj;
-		
-		return this.id == anotherId.id;
+
+		if (obj instanceof UserId)
+			return this.id == ((UserId) obj).id;
+
+		return false;
 	}
-	
-    @Override
-    public int hashCode() {
-    	return Objects.hash(id);
-    }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

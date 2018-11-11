@@ -1,14 +1,17 @@
 package com.spomatch.users;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.Valid;
 
 import com.spomatch.players.PlayerId;
 
@@ -21,22 +24,25 @@ import com.spomatch.players.PlayerId;
  *
  */
 @Entity
+@Table(name="users")
 public class User implements Cloneable {
 
+	@Valid
 	@EmbeddedId
 	private UserId id;
 
+	@Valid
 	@Embedded
 	private UserInfo userInfo;
 
+	@Valid
 	@Embedded
 	private UserAuthentication userAuthentication;
 	
 	/**
 	 * 회원은 여러 개의 선수 프로필을 가집니다.
 	 */
-    @ElementCollection
-    @CollectionTable(name = "players", joinColumns = @JoinColumn(name = "user_id"))
+	@OneToMany
 	private List<PlayerId> players;
 
 	// Hibernate
@@ -47,7 +53,7 @@ public class User implements Cloneable {
 		this.id = id;
 		this.userInfo = userInfo;
 		this.userAuthentication = userAuthentication;
-		this.players = players;
+		setPlayers(players);
 	}
 
 	public void assignNewId(UserId nextId) {
@@ -90,15 +96,19 @@ public class User implements Cloneable {
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (this.id == null)
+			return false;
+		
 		if (obj == null)
 			return false;
 		
 		if (obj instanceof UserId)
 			return id.equals(obj);
 		
-		User anotherUser = (User) obj;
+		if (obj instanceof User)
+			return getId().equals(((User) obj).getId());
 		
-		return getId().equals(anotherUser.getId());
+		return false;
 	}
 	
 	@Override
@@ -111,4 +121,11 @@ public class User implements Cloneable {
 		return new User(id, userInfo, userAuthentication, players);
 	}
 
+	private void setPlayers(List<PlayerId> players) {
+		if (players == null)
+			players = new ArrayList<>();
+		
+		this.players = players;
+	}
+	
 }

@@ -86,9 +86,7 @@ public class TestUserService {
 		User user = UserTests.createDummy(userAuth);
 		
 		// when
-		User registered = userService.register(user);
-		
-		System.out.println();
+		userService.register(user);
 	}
 
 	// then
@@ -123,7 +121,8 @@ public class TestUserService {
 		String pw = RandomStringUtils.randomAlphanumeric(10);
 		UserAuthentication userAuth = new UserAuthentication(idForLogin, pw);
 		
-		User registered = registerDummy();
+		User toRegister = UserTests.createDummy(userAuth);
+		User registered = userService.register(toRegister);
 		UserId id = registered.getId();
 		
 		// when
@@ -134,6 +133,21 @@ public class TestUserService {
 		// then
 		UserAuthentication userAuthChanged = userAuth.changePassword(newPassword);
 		assertTrue(userService.login(userAuthChanged));
+	}
+
+	// then
+	@Test(expected = PasswordNotMatchException.class)
+	public void 회원은_비밀번호를_수정할_수_있다_비밀번호가_달라서_실패() {
+		
+		// given
+		String oldPw = RandomStringUtils.randomAlphanumeric(10);
+		String newPassword = RandomStringUtils.randomAlphanumeric(10);
+		User registered = registerDummy();
+		UserId id = registered.getId();
+		
+		// when
+		userService.changePassword(id, new PasswordChangeRequest(oldPw, newPassword));
+		
 	}
 
 	// then
