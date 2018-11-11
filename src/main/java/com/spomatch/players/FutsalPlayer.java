@@ -16,15 +16,24 @@ public class FutsalPlayer extends Player {
 
 	@Column(name = "preferred_position")
 	private FutsalPosition preferredPosition;
+
+	//Hibernate
+	protected FutsalPlayer() {
+		super(null);
+	}
 	
+	public FutsalPlayer(String name) {
+		super(name);
+	}
+
 	@Override
-	protected Position getPreferredPosition() {
+	protected Position initPreferredPosition() {
 		return preferredPosition;
 	}
 
 	@Transient
 	@Override
-	protected SportsType getSportsType() {
+	protected SportsType initSportsType() {
 		return SportsType.FUTSAL;
 	}
 

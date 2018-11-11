@@ -3,24 +3,36 @@ package com.spomatch.users;
 import java.util.Objects;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Embeddable
 public class UserAuthentication {
 
 	@Length(min = 5, max = 30)
 	@NotBlank
-	private final String idForLogin;
+	private String idForLogin;
 	
 	@Length(min = 8)
 	@NotBlank
-	private final String pw;
+	private String pw;
 
+	// Hibernate
+	protected UserAuthentication() {
+	}
+	
 	public UserAuthentication(String idForLogin, String pw) {
 		this.idForLogin = idForLogin;
 		this.pw = pw;
+	}
+
+	public boolean compareCurrent(String oldPassword) {
+		return pw.equals(oldPassword);
+	}
+
+	public UserAuthentication changePassword(String newPassword) {
+		return new UserAuthentication(idForLogin, newPassword);
 	}
 	
 	@Override
@@ -38,11 +50,4 @@ public class UserAuthentication {
 		return Objects.hash(idForLogin, pw);
 	}
 
-	public boolean compareCurrent(String oldPassword) {
-		return pw.equals(oldPassword);
-	}
-
-	public UserAuthentication changePassword(String newPassword) {
-		return new UserAuthentication(idForLogin, newPassword);
-	}
 }

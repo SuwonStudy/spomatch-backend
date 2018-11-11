@@ -5,7 +5,8 @@ import com.spomatch.players.FutsalPlayer;
 
 public class FutsalTeam extends Team<FutsalPlayer> {
 
-	public FutsalTeam() {
+	public FutsalTeam(String name) {
+		super(name);
 	}
 	
 	public FutsalTeam(FutsalPlayer leader, String name) {
@@ -13,7 +14,7 @@ public class FutsalTeam extends Team<FutsalPlayer> {
 	}
 
 	@Override
-	public SportsType getSportsType() {
+	public SportsType initSportsType() {
 		return SportsType.FUTSAL;
 	}
 }

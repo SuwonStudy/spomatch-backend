@@ -10,7 +10,8 @@ import com.spomatch.players.SoccerPlayer;
  */
 public class SoccerParty extends Party<SoccerPlayer> {
 
-	public SoccerParty() {
+	public SoccerParty(String name) {
+		super(name);
 	}
 	
 	public SoccerParty(SoccerPlayer leader, String name) {
@@ -18,7 +19,7 @@ public class SoccerParty extends Party<SoccerPlayer> {
 	}
 
 	@Override
-	public SportsType getSportsType() {
+	public SportsType initSportsType() {
 		return SportsType.SOCCER;
 	}
 }

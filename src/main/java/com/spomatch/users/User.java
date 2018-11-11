@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
-import com.spomatch.players.PlayerId;
+import com.spomatch.players.Player;
 
 /**
  * 회원을 정의합니다.
@@ -27,9 +27,9 @@ import com.spomatch.players.PlayerId;
 @Table(name="users")
 public class User implements Cloneable {
 
-	@Valid
-	@EmbeddedId
-	private UserId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
 	@Valid
 	@Embedded
@@ -42,25 +42,25 @@ public class User implements Cloneable {
 	/**
 	 * 회원은 여러 개의 선수 프로필을 가집니다.
 	 */
-	@OneToMany
-	private List<PlayerId> players;
+	@OneToMany(mappedBy = "user")
+	private List<Player> players;
 
 	// Hibernate
 	protected User() {
 	}
 
-	public User(UserId id, UserInfo userInfo, UserAuthentication userAuthentication, List<PlayerId> players) {
+	public User(Long id, UserInfo userInfo, UserAuthentication userAuthentication, List<Player> players) {
 		this.id = id;
 		this.userInfo = userInfo;
 		this.userAuthentication = userAuthentication;
 		setPlayers(players);
 	}
 
-	public void assignNewId(UserId nextId) {
+	public void assignId(Long nextId) {
 		this.id = nextId;
 	}
 	
-	public UserId getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -80,7 +80,7 @@ public class User implements Cloneable {
 		return userAuthentication;
 	}
 
-	public List<PlayerId> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
 
@@ -102,11 +102,11 @@ public class User implements Cloneable {
 		if (obj == null)
 			return false;
 		
-		if (obj instanceof UserId)
+		if (obj instanceof Long)
 			return id.equals(obj);
 		
 		if (obj instanceof User)
-			return getId().equals(((User) obj).getId());
+			return getId() == ((User) obj).getId();
 		
 		return false;
 	}
@@ -121,7 +121,7 @@ public class User implements Cloneable {
 		return new User(id, userInfo, userAuthentication, players);
 	}
 
-	private void setPlayers(List<PlayerId> players) {
+	private void setPlayers(List<Player> players) {
 		if (players == null)
 			players = new ArrayList<>();
 		

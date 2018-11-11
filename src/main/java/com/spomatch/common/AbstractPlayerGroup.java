@@ -24,14 +24,14 @@ public abstract class AbstractPlayerGroup<T extends Player> extends SportsDomain
 	
 	protected List<T> players;
 	
-	public AbstractPlayerGroup() {
+	public AbstractPlayerGroup(String name) {
+		super(name);
 	}
 	
 	public AbstractPlayerGroup(T leader, String name) {
-		
+		super(name);
 		this.leader = leader;
 		this.players = new ArrayList<>();
 		this.players.add(leader);
-		this.name = name;
 	}
 }

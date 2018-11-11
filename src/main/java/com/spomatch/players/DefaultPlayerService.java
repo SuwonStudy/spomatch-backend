@@ -5,7 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.spomatch.common.SportsType;
-import com.spomatch.users.UserId;
+import com.spomatch.users.User;
 
 @Transactional
 @Service
@@ -18,22 +18,20 @@ public class DefaultPlayerService implements PlayerService {
 	}
 	
 	@Override
-	public void addPlayerToUser(UserId ownerId, Player newPlayer) {
-
-		newPlayer.assignToUser(ownerId);
-		
+	public void addPlayerToUser(User owner, Player newPlayer) {
 		repo.save(newPlayer);
+		
+		newPlayer.assignOwner(owner);
 	}
 
 	@Override
-	public void deleteById(PlayerId toRemove) {
-		repo.delete(toRemove);
+	public void deleteById(Long toRemove) {
+		repo.deleteById(toRemove);
 	}
 	
 	@Override
-	public void deletePlayerByUsersSportsType(UserId ownerId, SportsType sportsType) {
-		
-		repo.deleteByUserIdAndSportsType(ownerId, sportsType);
+	public void deletePlayerByUsersSportsType(User owner, SportsType sportsType) {
+		repo.deleteByUserAndSportsType(owner, sportsType);
 	}
 
 }

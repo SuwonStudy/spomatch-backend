@@ -10,7 +10,8 @@ import com.spomatch.players.Player;
  */
 public abstract class Party<T extends Player> extends AbstractPlayerGroup<T> {
 
-	public Party() {
+	public Party(String name) {
+		super(name);
 	}
 	
 	public Party(T leader, String name) {

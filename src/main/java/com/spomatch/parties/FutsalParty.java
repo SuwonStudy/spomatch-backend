@@ -11,7 +11,8 @@ import com.spomatch.players.FutsalPlayer;
  */
 public class FutsalParty extends Party<FutsalPlayer> {
 	
-	public FutsalParty() {
+	public FutsalParty(String name) {
+		super(name);
 	}
 	
 	public FutsalParty(FutsalPlayer leader, String name) {
@@ -19,7 +20,7 @@ public class FutsalParty extends Party<FutsalPlayer> {
 	}
 
 	@Override
-	public SportsType getSportsType() {
+	public SportsType initSportsType() {
 		return SportsType.FUTSAL;
 	}
 }

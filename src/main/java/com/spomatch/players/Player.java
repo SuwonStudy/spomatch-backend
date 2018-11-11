@@ -4,20 +4,18 @@ import java.util.Objects;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import com.spomatch.common.SportsDomainEntity;
-import com.spomatch.users.UserId;
+import com.spomatch.users.User;
 
 /**
  * 선수의 공통 속성과 행위를 정의합니다.
@@ -30,33 +28,41 @@ import com.spomatch.users.UserId;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Player extends SportsDomainEntity {
 
-	@NotNull
-	@EmbeddedId
-	protected PlayerId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	protected Long id;
 
-	@Embedded
-    @AttributeOverrides(
-            @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-    )
-	protected UserId userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	protected User user;
 
-	@Transient
-	public UserId getUserId() {
-		return userId;
+	public Player(String name) {
+		super(name);
+	}
+	
+	public User getUser() {
+		return user;
 	}
 
-	public void assignToUser(UserId userId) {
-		this.userId = userId;
+	public void assignOwner(User owner) {
+		this.user = owner;
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (this.id == null)
 			return false;
 		
-		Player anotherPlayer = (Player) obj;
+		if (obj == null)
+			return false;
+
+		if (obj instanceof Long)
+			return id.equals(obj);
+
+		if (obj instanceof User)
+			return id == ((User) obj).getId();
 		
-		return this.id.equals(anotherPlayer.id);
+		return false;
 	}
 	
 	@Override
@@ -67,7 +73,6 @@ public abstract class Player extends SportsDomainEntity {
 	/**
 	 * 선호하는 포지션을 반환합니다.
 	 */
-	@Transient
-	protected abstract Position getPreferredPosition();
+	protected abstract Position initPreferredPosition();
 
 }

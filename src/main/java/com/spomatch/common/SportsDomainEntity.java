@@ -11,7 +11,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import com.spomatch.common.rating.ActivityRating;
 import com.spomatch.common.rating.ActivityRatingRank;
@@ -31,7 +30,6 @@ public abstract class SportsDomainEntity {
 	 * 공통 속성
 	 */
 	@Length(min = 2, max = 15)
-	@NotBlank
 	protected String name;
 
 	@Transient
@@ -47,23 +45,26 @@ public abstract class SportsDomainEntity {
 	@Transient
 	protected ActivityRating activityRating;
 	
-	public SportsDomainEntity() {
-		this.sportsType = getSportsType();
+	public SportsDomainEntity(String name) {
+		this.name = name;
+		this.sportsType = initSportsType();
 	}
 	
 	/**
 	 * 선호 지역 목록을 반환합니다.
 	 */
-	@Transient
 	public List<Location> getPrefferedLocations() {
 		return preferredLocations;
 	}
-	
+
+	public SportsType getSportsType() {
+		return sportsType;
+	}
+
 	/**
 	 * 운동 종목을 반환합니다.
 	 */
-	@Transient
-	protected abstract SportsType getSportsType();
+	protected abstract SportsType initSportsType();
 
 	public int getActivityRatingAsInt() {
 		return activityRating.getAsInt();

@@ -1,13 +1,14 @@
 package com.spomatch.users;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import com.spomatch.common.Location;
 
@@ -62,6 +63,11 @@ public class UserInfo {
 			age == another.age && eqaulsPreferredLocations(another);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, age, preferredLocations);
+	}
+
 	private boolean eqaulsPreferredLocations(UserInfo another) {
 		if (preferredLocations == null && another.preferredLocations == null)
 			return true;
@@ -71,4 +77,5 @@ public class UserInfo {
 			return false;
 		}
 	}
+	
 }

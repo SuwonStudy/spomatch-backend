@@ -39,7 +39,7 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public void updateUserInfo(UserId id, UserInfo toUpdate) {
+	public void updateUserInfo(Long id, UserInfo toUpdate) {
 
 		User user = getById(id);
 		
@@ -47,7 +47,7 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public void changePassword(UserId id, PasswordChangeRequest req) {
+	public void changePassword(Long id, PasswordChangeRequest req) {
 
 		User user = getById(id);
 		
@@ -55,18 +55,22 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public void cancel(UserId idToCancel) {
+	public void cancel(Long idToCancel) {
 		
+		assertNoPlayersExist(idToCancel);
+		
+		repo.deleteById(idToCancel);
+	}
+
+	private void assertNoPlayersExist(Long idToCancel) {
 		User toCancel = getById(idToCancel);
 		
 		if (toCancel.getPlayerSize() > 0)
 			throw new PlayerExistWhenCancelMembershipException();
-		
-		repo.delete(toCancel);
 	}
 
 	@Override
-	public User getById(UserId id) {
+	public User getById(Long id) {
 		
 		User user = repo.getOne(id);
 		

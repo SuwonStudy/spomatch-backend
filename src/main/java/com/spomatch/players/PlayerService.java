@@ -1,13 +1,13 @@
 package com.spomatch.players;
 
 import com.spomatch.common.SportsType;
-import com.spomatch.users.UserId;
+import com.spomatch.users.User;
 
 public interface PlayerService {
 
-	void addPlayerToUser(UserId ownerId, Player newPlayer);
+	void addPlayerToUser(User owner, Player newPlayer);
 
-	void deleteById(PlayerId toRemove);
+	void deleteById(Long toRemove);
 	
-	void deletePlayerByUsersSportsType(UserId ownerId, SportsType sportsType);
+	void deletePlayerByUsersSportsType(User owner, SportsType sportsType);
 }

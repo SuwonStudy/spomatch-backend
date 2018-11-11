@@ -4,13 +4,13 @@ public interface UserService {
 
 	User register(User user);
 
-	void updateUserInfo(UserId id, UserInfo toUpdate);
+	void updateUserInfo(Long id, UserInfo toUpdate);
 	
-	void changePassword(UserId id, PasswordChangeRequest req);
+	void changePassword(Long id, PasswordChangeRequest req);
 
-	void cancel(UserId idToCancel);
+	void cancel(Long idToCancel);
 
-	User getById(UserId id);
+	User getById(Long id);
 
 	boolean login(UserAuthentication userAuthChanged);
 

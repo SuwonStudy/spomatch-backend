@@ -7,14 +7,16 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.spomatch.common.SportsType;
 import com.spomatch.players.FutsalPlayer;
 import com.spomatch.players.Player;
 import com.spomatch.players.PlayerService;
-import com.spomatch.players.PlayerServiceFactory;
 import com.spomatch.players.SoccerPlayer;
 import com.spomatch.players.support.PlayerExistWhenCancelMembershipException;
 import com.spomatch.players.support.PlayerIsALeaderOfAnyGroupException;
@@ -27,16 +29,15 @@ import com.spomatch.users.support.UserNotExistException;
  * 
  * @author Seongbin Kim
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestUserService {
 	
+	@Autowired
 	private UserService userService;
+	
+	@Autowired
 	private PlayerService playerService;
-
-	@Before
-	public void setUp() {
-		userService = UserServiceFactory.getInstance().getService();
-		playerService = PlayerServiceFactory.getInstance().getService();
-	}
 	
 	@Test
 	public void 회원은_가입_할_수_있다() {
@@ -123,7 +124,7 @@ public class TestUserService {
 		
 		User toRegister = UserTests.createDummy(userAuth);
 		User registered = userService.register(toRegister);
-		UserId id = registered.getId();
+		Long id = registered.getId();
 		
 		// when
 		String newPassword = RandomStringUtils.randomAlphanumeric(10);
@@ -143,7 +144,7 @@ public class TestUserService {
 		String oldPw = RandomStringUtils.randomAlphanumeric(10);
 		String newPassword = RandomStringUtils.randomAlphanumeric(10);
 		User registered = registerDummy();
-		UserId id = registered.getId();
+		Long id = registered.getId();
 		
 		// when
 		userService.changePassword(id, new PasswordChangeRequest(oldPw, newPassword));
@@ -169,10 +170,11 @@ public class TestUserService {
 		
 		// given
 		User user = registerDummy();
+
+		String playerName = RandomStringUtils.randomAlphabetic(5);
+		Player newPlayer = new SoccerPlayer(playerName);
 		
-		Player soccerPlayer = new SoccerPlayer();
-		
-		playerService.addPlayerToUser(user.getId(), soccerPlayer);
+		playerService.addPlayerToUser(user, newPlayer);
 		
 		// when
 		userService.cancel(user.getId());
@@ -183,11 +185,12 @@ public class TestUserService {
 		
 		// given
 		User user = registerDummy();
-		UserId id = user.getId();
+		Long id = user.getId();
 		
 		// when
-		playerService.addPlayerToUser(id, new SoccerPlayer());
-		playerService.addPlayerToUser(id, new FutsalPlayer());
+		String playerName = RandomStringUtils.randomAlphabetic(5);
+		playerService.addPlayerToUser(user, new SoccerPlayer(playerName));
+		playerService.addPlayerToUser(user, new FutsalPlayer(playerName));
 		
 		// then
 		user = userService.getById(id);
@@ -202,8 +205,10 @@ public class TestUserService {
 		User user = new User();
 		
 		// when
+		String playerName = RandomStringUtils.randomAlphabetic(5);
+		
 		for (int i = 0; i < 2; i++)
-			playerService.addPlayerToUser(user.getId(), new SoccerPlayer());
+			playerService.addPlayerToUser(user, new SoccerPlayer(playerName));
 	}
 	
 	@Test
@@ -211,12 +216,14 @@ public class TestUserService {
 		
 		// given
 		User user = registerDummy();
-		UserId id = user.getId();
+		Long id = user.getId();
 		
-		playerService.addPlayerToUser(id, new SoccerPlayer());
+		String playerName = RandomStringUtils.randomAlphabetic(5);
+		SoccerPlayer newPlayer = new SoccerPlayer(playerName);
+		playerService.addPlayerToUser(user, newPlayer);
 		
 		// when
-		playerService.deletePlayerByUsersSportsType(id, SportsType.SOCCER);
+		playerService.deletePlayerByUsersSportsType(user, SportsType.SOCCER);
 		
 		// then
 		user = userService.getById(id);

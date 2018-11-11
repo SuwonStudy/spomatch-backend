@@ -5,7 +5,6 @@ import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 import com.spomatch.common.SportsType;
 
@@ -21,15 +20,23 @@ public class SoccerPlayer extends Player {
 
 	@Column(name = "preferred_position")
 	private SoccerPosition preferredPosition;
+
+	// Hibernate
+	protected SoccerPlayer() {
+		super(null);
+	}
+	
+	public SoccerPlayer(String name) {
+		super(name);
+	}
 	
 	@Override
-	protected Position getPreferredPosition() {
+	protected Position initPreferredPosition() {
 		return preferredPosition;
 	}
 
-	@Transient
 	@Override
-	protected SportsType getSportsType() {
+	protected SportsType initSportsType() {
 		return SportsType.SOCCER;
 	}
 
